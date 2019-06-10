@@ -1,0 +1,3 @@
+# TypeError: expected str, bytes or os.PathLike object, not PosixPath
+
+in docker, replace /opt/conda/lib/python3.6/site-packages/pathlib.py with /opt/conda/lib/python3.6/pathlib.py
