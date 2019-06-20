@@ -155,8 +155,8 @@ class DynamicUnetWide(SequentialEx):
 
             n_out = nf if not_final else nf//2
 
-            unet_block = UnetBlockWide(up_in_c, x_in_c, n_out, self.sfs[i], final_div=not_final, blur=blur, self_attention=sa,
-                                   norm_type=norm_type, extra_bn=extra_bn, **kwargs).eval()
+            unet_block = UnetBlockWide( up_in_c, x_in_c, n_out, self.sfs[i], final_div=not_final, blur=blur, self_attention=sa,
+                                        norm_type=norm_type, extra_bn=extra_bn, **kwargs).eval()
             layers.append(unet_block)
             x = unet_block(x)
 

@@ -3,6 +3,7 @@ from fastai.vision.learner import cnn_config
 from .unet import DynamicUnetWide, DynamicUnetDeep
 from .loss import FeatureLoss
 from .dataset import *
+#from mklib.nn.pthnet import pthutils, pthunet
 
 #Weights are implicitly read from ./models/ folder 
 def gen_inference_wide(root_folder:Path, weights_name:str, nf_factor:int=2, arch=models.resnet101)->Learner:
@@ -25,13 +26,19 @@ def unet_learner_wide(data:DataBunch, arch:Callable, pretrained:bool=True, blur_
     "Build Unet learner from `data` and `arch`."
     meta = cnn_config(arch)
     body = create_body(arch, pretrained)
+    #preModel = torch.load('/Projects/mk_utils/Convert_Mxnet_to_Pytorch/Pytorch_NewModel.pth')
+    #preModel = list(preModel.children())[0]
+    #body = pthutils.cut_model(preModel,-3)
+
     model = to_device(DynamicUnetWide(body, n_classes=data.c, blur=blur, blur_final=blur_final,
           self_attention=self_attention, y_range=y_range, norm_type=norm_type, last_cross=last_cross,
           bottle=bottle, nf_factor=nf_factor), data.device)
+    #print(model[2])
     learn = Learner(data, model, **kwargs)
     learn.split(ifnone(split_on,meta['split']))
-    if pretrained: learn.freeze()
-    apply_init(model[2], nn.init.kaiming_normal_)
+    if pretrained: learn.freeze_to(-2)
+    #print(model[2])
+    #apply_init(model[2], nn.init.kaiming_normal_)
     return learn
 
 #----------------------------------------------------------------------
