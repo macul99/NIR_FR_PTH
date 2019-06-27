@@ -105,3 +105,13 @@ def fit(epochs:int, learn:BasicLearner, callbacks:Optional[CallbackList]=None, m
         exception = e
         raise
     finally: cb_handler.on_train_end(exception)
+
+
+# gan learner
+fastai.vision.gan.GANLearner(Learner)
+	gen_loss_func, crit_loss_func = get_loss_from_func(learn_gen.loss_func, learn_crit.loss_func, weights_gen)
+	gan = GANModule(learn_gen.model, learn_crit.model)
+	loss_func = GANLoss(gen_loss_func, crit_loss_func, gan)
+	Learner.__init__(data, gan, loss_func, callback_fns=[switcher])
+	self.gan_trainer = trainer = GANTrainer()
+	self.callbacks.append(self.gan_trainer)

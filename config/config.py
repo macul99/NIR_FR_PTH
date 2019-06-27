@@ -117,6 +117,24 @@ update_html_freq = 1000 # frequency of saving training results to html
 print_freq = 100 # frequency of showing training results on console
 no_html = False # do not save intermediate training results to [opt.checkpoints_dir]/[opt.name]/web/
 
+GanTrainer = BaseOptions()
+GanTrainer.switch_eval=True
+GanTrainer.clip=None
+GanTrainer.beta=0.98
+GanTrainer.gen_first=True
+GanTrainer.gen_thresh = 1.0
+GanTrainer.crit_thresh = 1.0
+GanTrainer.n_gen = None
+GanTrainer.n_crit = None
+
+LossCoef = BaseOptions()
+LossCoef.feature = 1.0
+LossCoef.pixel = 1.0
+LossCoef.gan_pair_D = 1.0
+LossCoef.gan_pair_G = 1.0
+LossCoef.gan_unpair_D = 1.0
+LossCoef.gan_unpair_G = 1.0
+
 DatasetPaired = BaseOptions()
 DatasetPaired.dataroot = '/Projects/NIR_FR_PTH/data/Oulu_ALIGN'
 DatasetPaired.generatedroot = None # for imaged generated from GAN, set to None if don't want to include it
@@ -242,7 +260,7 @@ ModelGan.opt_func = functools.partial(torch.optim.Adam, betas=(0.9,0.999))
 ModelGan.wd = 1e-2
 ModelGan.true_wd = True
 ModelGan.bn_wd = True
-ModelGan.lr = slice(1e-3)
+ModelGan.lr = 1e-3 # do not use slice with GANTrainer
 ModelGan.lr_decay_iters = 50 # multiply by a gamma every lr_decay_iters iterations
 ModelGan.lr_policy = 'linear'
 if feature_loss_name == 'vgg16':
@@ -266,4 +284,5 @@ ModelCritic.opt_func = functools.partial(torch.optim.Adam, betas=(0.9,0.999))
 ModelCritic.wd = 1e-2
 ModelCritic.true_wd = True
 ModelCritic.bn_wd = True
-ModelCritic.lr = 1e-3 # do not use slice here
+ModelCritic.lr = 1e-3 # do not use slice with GANTrainer
+ModelCritic.pool_size = 50
